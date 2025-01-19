@@ -1235,18 +1235,18 @@ public final class Test {
         new java.lang.String[] { "CleanedEmail", });
   }
 
-  @javax.ws.rs.ext.Provider
-  @javax.ws.rs.Produces({"application/protobuf", "application/json"})
-  @javax.ws.rs.Consumes({"application/protobuf", "application/json"})
-  public static class ProtoBufMessageProvider implements javax.ws.rs.ext.MessageBodyWriter<com.google.protobuf.Message>, javax.ws.rs.ext.MessageBodyReader<com.google.protobuf.Message> {
+  @jakarta.ws.rs.ext.Provider
+  @jakarta.ws.rs.Produces({"application/protobuf", "application/json"})
+  @jakarta.ws.rs.Consumes({"application/protobuf", "application/json"})
+  public static class ProtoBufMessageProvider implements jakarta.ws.rs.ext.MessageBodyWriter<com.google.protobuf.Message>, jakarta.ws.rs.ext.MessageBodyReader<com.google.protobuf.Message> {
   
           @Override
-          public boolean isWriteable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+          public boolean isWriteable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
               return com.google.protobuf.Message.class.isAssignableFrom(type) && ("json".equals(mediaType.getSubtype()) || "protobuf".equals(mediaType.getSubtype()));
           }
   
           @Override
-          public long getSize(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+          public long getSize(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
               if (t == null) {
                   return -1;
               }
@@ -1260,7 +1260,7 @@ public final class Test {
           }
   
           @Override
-          public void writeTo(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType, javax.ws.rs.core.MultivaluedMap<String, Object> httpHeaders, java.io.OutputStream entityStream) throws java.io.IOException, javax.ws.rs.WebApplicationException {
+          public void writeTo(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType, jakarta.ws.rs.core.MultivaluedMap<String, Object> httpHeaders, java.io.OutputStream entityStream) throws java.io.IOException, jakarta.ws.rs.WebApplicationException {
               switch (mediaType.getSubtype()) {
                   case "protobuf":
                       t.writeTo(entityStream);
@@ -1269,18 +1269,18 @@ public final class Test {
                       entityStream.write(com.google.protobuf.util.JsonFormat.printer().print(t).getBytes("UTF-8"));
                       break;
                   default:
-                      throw new javax.ws.rs.WebApplicationException("MediaType not supported!");
+                      throw new jakarta.ws.rs.WebApplicationException("MediaType not supported!");
               }
   
           }
   
           @Override
-          public boolean isReadable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+          public boolean isReadable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
               return com.google.protobuf.Message.class.isAssignableFrom(type) && ("json".equals(mediaType.getSubtype()) || "protobuf".equals(mediaType.getSubtype()));
           }
   
           @Override
-          public com.google.protobuf.Message readFrom(Class<com.google.protobuf.Message> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType, javax.ws.rs.core.MultivaluedMap<String, String> httpHeaders, java.io.InputStream entityStream) throws java.io.IOException, javax.ws.rs.WebApplicationException {
+          public com.google.protobuf.Message readFrom(Class<com.google.protobuf.Message> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType, jakarta.ws.rs.core.MultivaluedMap<String, String> httpHeaders, java.io.InputStream entityStream) throws java.io.IOException, jakarta.ws.rs.WebApplicationException {
               try {
                   switch (mediaType.getSubtype()) {
                       case "protobuf":
@@ -1291,41 +1291,41 @@ public final class Test {
                           com.google.protobuf.util.JsonFormat.parser().merge(new java.io.InputStreamReader(entityStream), msg);
                           return msg.build();
                       default:
-                          throw new javax.ws.rs.WebApplicationException("MediaType not supported!");
+                          throw new jakarta.ws.rs.WebApplicationException("MediaType not supported!");
                   }
               } catch (Exception e) {
-                  throw new javax.ws.rs.WebApplicationException(e);
+                  throw new jakarta.ws.rs.WebApplicationException(e);
               }
           }
   }
   
-  @javax.ws.rs.Path( "/twitch.users.email.EmailBoss" )
+  @jakarta.ws.rs.Path( "/twitch.users.email.EmailBoss" )
   public interface EmailBoss {
-    @javax.ws.rs.POST
-    @javax.ws.rs.Path( "/UpdateEmail" )
-    @javax.ws.rs.Consumes({"application/protobuf", "application/json"})
-    @javax.ws.rs.Produces({"application/protobuf", "application/json"})
+    @jakarta.ws.rs.POST
+    @jakarta.ws.rs.Path( "/UpdateEmail" )
+    @jakarta.ws.rs.Consumes({"application/protobuf", "application/json"})
+    @jakarta.ws.rs.Produces({"application/protobuf", "application/json"})
     twitch.users.email.Test.UpdateEmailResponse updateEmail(twitch.users.email.Test.UpdateEmailRequest request);
   }
   
   public static class EmailBossClient implements twitch.users.email.Test.EmailBoss {
-    private final javax.ws.rs.client.WebTarget target;
+    private final jakarta.ws.rs.client.WebTarget target;
   
-    public EmailBossClient(javax.ws.rs.client.WebTarget target) {
+    public EmailBossClient(jakarta.ws.rs.client.WebTarget target) {
       this.target = target.path("twitch.users.email.EmailBoss");
       this.target.register(new twitch.users.email.Test.ProtoBufMessageProvider());
     }
   
     private <R> R call(String path, com.google.protobuf.Message req, Class<R> responseClass) {
-      javax.ws.rs.core.Response response = target.path(path)
+      jakarta.ws.rs.core.Response response = target.path(path)
           .request("application/protobuf")
-          .post(javax.ws.rs.client.Entity.entity(req, "application/protobuf"));
-  	 if (response.getStatusInfo().getFamily() == javax.ws.rs.core.Response.Status.Family.SUCCESSFUL) {
+          .post(jakarta.ws.rs.client.Entity.entity(req, "application/protobuf"));
+  	 if (response.getStatusInfo().getFamily() == jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL) {
           R r = response.readEntity(responseClass);
           response.close();
           return r;
       } else {
-          throw new javax.ws.rs.WebApplicationException(response);
+          throw new jakarta.ws.rs.WebApplicationException(response);
       }
     }
   

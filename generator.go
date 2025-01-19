@@ -3,11 +3,11 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"strings"
 )
 
 type generator struct {
@@ -78,18 +78,18 @@ func (g *generator) generateProvider(file *descriptor.FileDescriptorProto) *plug
 	if !multi {
 		static = "static "
 	}
-	g.P(`@javax.ws.rs.ext.Provider
-@javax.ws.rs.Produces({"application/protobuf", "application/json"})
-@javax.ws.rs.Consumes({"application/protobuf", "application/json"})
-public `, static, `class `, serviceName, ` implements javax.ws.rs.ext.MessageBodyWriter<com.google.protobuf.Message>, javax.ws.rs.ext.MessageBodyReader<com.google.protobuf.Message> {
+	g.P(`@jakarta.ws.rs.ext.Provider
+@jakarta.ws.rs.Produces({"application/protobuf", "application/json"})
+@jakarta.ws.rs.Consumes({"application/protobuf", "application/json"})
+public `, static, `class `, serviceName, ` implements jakarta.ws.rs.ext.MessageBodyWriter<com.google.protobuf.Message>, jakarta.ws.rs.ext.MessageBodyReader<com.google.protobuf.Message> {
 
         @Override
-        public boolean isWriteable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+        public boolean isWriteable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
             return com.google.protobuf.Message.class.isAssignableFrom(type) && ("json".equals(mediaType.getSubtype()) || "protobuf".equals(mediaType.getSubtype()));
         }
 
         @Override
-        public long getSize(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+        public long getSize(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
             if (t == null) {
                 return -1;
             }
@@ -103,7 +103,7 @@ public `, static, `class `, serviceName, ` implements javax.ws.rs.ext.MessageBod
         }
 
         @Override
-        public void writeTo(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType, javax.ws.rs.core.MultivaluedMap<String, Object> httpHeaders, java.io.OutputStream entityStream) throws java.io.IOException, javax.ws.rs.WebApplicationException {
+        public void writeTo(com.google.protobuf.Message t, Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType, jakarta.ws.rs.core.MultivaluedMap<String, Object> httpHeaders, java.io.OutputStream entityStream) throws java.io.IOException, jakarta.ws.rs.WebApplicationException {
             switch (mediaType.getSubtype()) {
                 case "protobuf":
                     t.writeTo(entityStream);
@@ -112,18 +112,18 @@ public `, static, `class `, serviceName, ` implements javax.ws.rs.ext.MessageBod
                     entityStream.write(com.google.protobuf.util.JsonFormat.printer().print(t).getBytes("UTF-8"));
                     break;
                 default:
-                    throw new javax.ws.rs.WebApplicationException("MediaType not supported!");
+                    throw new jakarta.ws.rs.WebApplicationException("MediaType not supported!");
             }
 
         }
 
         @Override
-        public boolean isReadable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType) {
+        public boolean isReadable(Class<?> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType) {
             return com.google.protobuf.Message.class.isAssignableFrom(type) && ("json".equals(mediaType.getSubtype()) || "protobuf".equals(mediaType.getSubtype()));
         }
 
         @Override
-        public com.google.protobuf.Message readFrom(Class<com.google.protobuf.Message> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, javax.ws.rs.core.MediaType mediaType, javax.ws.rs.core.MultivaluedMap<String, String> httpHeaders, java.io.InputStream entityStream) throws java.io.IOException, javax.ws.rs.WebApplicationException {
+        public com.google.protobuf.Message readFrom(Class<com.google.protobuf.Message> type, java.lang.reflect.Type genericType, java.lang.annotation.Annotation[] annotations, jakarta.ws.rs.core.MediaType mediaType, jakarta.ws.rs.core.MultivaluedMap<String, String> httpHeaders, java.io.InputStream entityStream) throws java.io.IOException, jakarta.ws.rs.WebApplicationException {
             try {
                 switch (mediaType.getSubtype()) {
                     case "protobuf":
@@ -134,10 +134,10 @@ public `, static, `class `, serviceName, ` implements javax.ws.rs.ext.MessageBod
                         com.google.protobuf.util.JsonFormat.parser().merge(new java.io.InputStreamReader(entityStream), msg);
                         return msg.build();
                     default:
-                        throw new javax.ws.rs.WebApplicationException("MediaType not supported!");
+                        throw new jakarta.ws.rs.WebApplicationException("MediaType not supported!");
                 }
             } catch (Exception e) {
-                throw new javax.ws.rs.WebApplicationException(e);
+                throw new jakarta.ws.rs.WebApplicationException(e);
             }
         }
 }
@@ -181,23 +181,23 @@ func (g *generator) generateServiceClient(file *descriptor.FileDescriptorProto, 
 		static = "static "
 	}
 	g.P(`public `, static, `class `, serviceClass, ` implements `, interfaceClass, ` {`)
-	g.P(`  private final javax.ws.rs.client.WebTarget target;`)
+	g.P(`  private final jakarta.ws.rs.client.WebTarget target;`)
 	g.P()
-	g.P(`  public `, serviceClass, `(javax.ws.rs.client.WebTarget target) {`)
+	g.P(`  public `, serviceClass, `(jakarta.ws.rs.client.WebTarget target) {`)
 	g.P(`    this.target = target.path("`, servicePath, `");`)
 	g.P(`    this.target.register(new `, provider, `());`)
 	g.P(`  }`)
 	g.P()
 	g.P(`  private <R> R call(String path, com.google.protobuf.Message req, Class<R> responseClass) {`)
-	g.P(`    javax.ws.rs.core.Response response = target.path(path)`)
+	g.P(`    jakarta.ws.rs.core.Response response = target.path(path)`)
 	g.P(`        .request("application/protobuf")`)
-	g.P(`        .post(javax.ws.rs.client.Entity.entity(req, "application/protobuf"));`)
-	g.P(`	 if (response.getStatusInfo().getFamily() == javax.ws.rs.core.Response.Status.Family.SUCCESSFUL) {`)
+	g.P(`        .post(jakarta.ws.rs.client.Entity.entity(req, "application/protobuf"));`)
+	g.P(`	 if (response.getStatusInfo().getFamily() == jakarta.ws.rs.core.Response.Status.Family.SUCCESSFUL) {`)
 	g.P(`        R r = response.readEntity(responseClass);`)
 	g.P(`        response.close();`)
 	g.P(`        return r;`)
 	g.P(`    } else {`)
-	g.P(`        throw new javax.ws.rs.WebApplicationException(response);`)
+	g.P(`        throw new jakarta.ws.rs.WebApplicationException(response);`)
 	g.P(`    }`)
 	g.P(`  }`)
 	g.P()
@@ -250,7 +250,7 @@ func (g *generator) generateServiceInterface(file *descriptor.FileDescriptorProt
 		}
 	}
 
-	g.P(`@javax.ws.rs.Path( "/`, servicePath, `" )`)
+	g.P(`@jakarta.ws.rs.Path( "/`, servicePath, `" )`)
 	g.P(`public interface `, serviceClass, ` {`)
 
 	for _, method := range service.GetMethod() {
@@ -259,10 +259,10 @@ func (g *generator) generateServiceInterface(file *descriptor.FileDescriptorProt
 		methodName := lowerCamelCase(method.GetName())
 
 		// add comment
-		g.P(`  `, `@javax.ws.rs.POST`)
-		g.P(`  `, `@javax.ws.rs.Path( "/`, strings.Title(methodName), `" )`)
-		g.P(`  `, `@javax.ws.rs.Consumes({"application/protobuf", "application/json"})`)
-		g.P(`  `, `@javax.ws.rs.Produces({"application/protobuf", "application/json"})`)
+		g.P(`  `, `@jakarta.ws.rs.POST`)
+		g.P(`  `, `@jakarta.ws.rs.Path( "/`, strings.Title(methodName), `" )`)
+		g.P(`  `, `@jakarta.ws.rs.Consumes({"application/protobuf", "application/json"})`)
+		g.P(`  `, `@jakarta.ws.rs.Produces({"application/protobuf", "application/json"})`)
 		g.P(`  `, outputType, ` `, methodName, `(`, inputType, ` request);`)
 	}
 
